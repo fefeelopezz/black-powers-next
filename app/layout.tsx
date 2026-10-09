@@ -1,15 +1,36 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Karla, Playfair_Display } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { MotionProvider } from "@/components/motion"
+import { SiteFooter } from "@/components/site-footer"
+import { SiteHeader } from "@/components/site-header"
+import { site } from "@/lib/site"
+import { cn } from "@/lib/utils"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
+// Tipografía recomendada por UI/UX Pro Max para restaurantes: Playfair (titulares) + Karla (texto).
+const display = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-mono",
+  style: ["normal", "italic"],
+  variable: "--font-display",
 })
+
+const body = Karla({
+  subsets: ["latin"],
+  variable: "--font-body",
+})
+
+export const metadata: Metadata = {
+  title: {
+    default: `${site.name} - ${site.tagline}`,
+    template: `%s - ${site.name}`,
+  },
+  description: site.description,
+}
+
+export const viewport: Viewport = {
+  themeColor: "#0c0c0c",
+}
 
 export default function RootLayout({
   children,
@@ -17,13 +38,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="es" className={cn("dark", display.variable, body.variable)}>
+      <body className="flex min-h-svh flex-col">
+        <MotionProvider>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </MotionProvider>
       </body>
     </html>
   )
